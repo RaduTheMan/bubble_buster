@@ -7,6 +7,7 @@ class BubbleBuster:
 
     def __init__(self, file_name_game_config):
         pygame.init()
+        pygame.font.init()
 
         self.game_config = ConfigLoader.load_config(file_name_game_config)
         self.window = pygame.display.set_mode((self.game_config['width'],
