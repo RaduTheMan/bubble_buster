@@ -1,6 +1,7 @@
 import pygame
-from config_loader import ConfigLoader
-from states_provider import get_states_registry
+from configs.config_loader import ConfigLoader
+from states.states_provider import get_states_registry
+from configs.states_config import NEXT_STATE
 
 
 class BubbleBuster:
@@ -8,6 +9,7 @@ class BubbleBuster:
     def __init__(self, file_name_game_config):
         pygame.init()
         pygame.font.init()
+        pygame.mouse.set_visible(True)
 
         self.game_config = ConfigLoader.load_config(file_name_game_config)
         self.window = pygame.display.set_mode((self.game_config['width'],
@@ -24,8 +26,12 @@ class BubbleBuster:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.is_running = False
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_w:
-                        self.active_state = next(self.possible_states_iter)
+                if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                    mouse_position = pygame.mouse.get_pos()
+                    if self.active_state == 'menu':
+                        self.states_registry['menu']\
+                            .listen_for_click(mouse_position)
+                if event.type == NEXT_STATE:
+                    self.active_state = next(self.possible_states_iter)
             self.states_registry[self.active_state].draw_state()
             pygame.display.update()

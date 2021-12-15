@@ -1,4 +1,4 @@
-from state import State
+from states.state import State
 from pygame.surface import Surface, SurfaceType
 from typing import Union
 import pygame

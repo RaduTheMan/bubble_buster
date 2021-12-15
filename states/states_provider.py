@@ -1,8 +1,8 @@
 from pygame.surface import Surface, SurfaceType
-from state_config import menu_config
-from menu import Menu
-from game_in_progress import GameInProgress
-from game_over import GameOver
+from configs.states_config import menu_config
+from states.menu import Menu
+from states.game_in_progress import GameInProgress
+from states.game_over import GameOver
 from typing import Union
 
 

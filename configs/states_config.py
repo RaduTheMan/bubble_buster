@@ -12,11 +12,16 @@ menu_config = {
         'font-type': 'comic-sans',
         'color': colors.WHITE
     },
+    'title-image': {
+        'path': os.path.join('Resources', 'pow.png'),
+        'width': 500,
+        'height': 374
+    },
     'buttons': [
         {
             'title': {
                 'text': 'Play',
-                'font-size': 16,
+                'font-size': 35,
                 'font-type': 'comic-sans',
                 'color': colors.WHITE
             },
@@ -28,7 +33,7 @@ menu_config = {
         {
             'title': {
                 'text': 'Quit',
-                'font-size': 16,
+                'font-size': 35,
                 'font-type': 'comic-sans',
                 'color': colors.WHITE
             },

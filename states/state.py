@@ -1,4 +1,4 @@
-from state_config import state_config
+from configs.states_config import state_config
 from pygame.surface import Surface, SurfaceType
 from pygame import image
 from typing import Union
