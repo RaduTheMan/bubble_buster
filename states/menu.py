@@ -35,6 +35,4 @@ class Menu(State):
                                            self.title.text.get_width() / 2, 40))
         self.layout.draw_buttons()
 
-    def listen_for_click(self, mouse_position):
-        self.layout.listen_for_click(mouse_position)
 

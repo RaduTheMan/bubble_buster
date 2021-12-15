@@ -4,6 +4,9 @@ from typing import Union
 
 
 class Layout:
+
+    MAX_ALPHA = 255
+
     def __init__(self, buttons, file_name_layout_config,
                  window: Union[Surface, SurfaceType]):
         self.layout_config = ConfigLoader.load_config(file_name_layout_config)
@@ -29,5 +32,13 @@ class Layout:
         for drawed_button_rect, button in zip(self.drawed_buttons_rects, self.buttons):
             if drawed_button_rect.collidepoint(mouse_position):
                 button.action()
+
+    def listen_for_mouse_movement(self, mouse_position):
+        for drawed_button_rect, button in zip(self.drawed_buttons_rects,
+                                              self.buttons):
+            if drawed_button_rect.collidepoint(mouse_position):
+                button.background.set_alpha(self.layout_config['alpha'])
+            else:
+                button.background.set_alpha(Layout.MAX_ALPHA)
 
 

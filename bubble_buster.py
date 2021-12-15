@@ -26,10 +26,16 @@ class BubbleBuster:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.is_running = False
-                if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                if event.type == pygame.MOUSEMOTION:
                     mouse_position = pygame.mouse.get_pos()
                     if self.active_state == 'menu':
                         self.states_registry['menu']\
+                            .layout\
+                            .listen_for_mouse_movement(mouse_position)
+                if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                    mouse_position = pygame.mouse.get_pos()
+                    if self.active_state == 'menu':
+                        self.states_registry['menu'].layout\
                             .listen_for_click(mouse_position)
                 if event.type == NEXT_STATE:
                     self.active_state = next(self.possible_states_iter)
