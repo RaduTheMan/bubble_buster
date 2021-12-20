@@ -49,9 +49,9 @@ menu_config = {
 
 game_in_progress_config = {
     'circle': {
-        'radius': 20
+        'radius': 20.0
     },
-    'velocity': 10,
+    'velocity': 20,
     'border-vertical': {
         'width': 20,
         'height': window_config['height']

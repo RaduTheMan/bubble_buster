@@ -15,8 +15,9 @@ def get_distance(first_point, second_point):
                      + (second_point[1] - first_point[1]) ** 2)
 
 
-def get_point_at_distance(first_point, second_point, distance=0.5):
-    n = get_distance(first_point, second_point)
-    x = first_point[0] + distance / n * (second_point[0] - first_point[0])
-    y = first_point[1] + distance / n * (second_point[1] - first_point[1])
-    return x, y
+def get_point_at_distance(point, slope, distance=0.25):
+    magnitude = math.sqrt(1 + slope ** 2)
+    n = 1 / magnitude, slope / magnitude
+    first_solution = point[0] + distance * n[0], point[1] + distance * n[1]
+    second_solution = point[0] - distance * n[0], point[1] - distance * n[1]
+    return first_solution if first_solution[1] < point[1] else second_solution
