@@ -51,7 +51,7 @@ game_in_progress_config = {
     'circle': {
         'radius': 20
     },
-    'velocity': 5,
+    'velocity': 10,
     'border-vertical': {
         'width': 20,
         'height': window_config['height']
