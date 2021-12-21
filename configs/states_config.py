@@ -59,5 +59,22 @@ game_in_progress_config = {
     'border-horizontal': {
         'width': window_config['width'],
         'height': 20
-    }
+    },
+    'levels': [
+        "GR,GR,GR,GR,GRY,GRY,GRY,GRY,R,R,R,R;"
+        "GR,GR,GR,GRY,GRY,GRY,GRY,R,R,R,R;"
+        "BL,BL,BL,-,BL,BL,BL,BL,-,BL,BL,BL;"
+        "GR,GRY,R,-,GR,GRY,R,-,GR,GRY,R;"
+        "BL,BL,BL,BL,-,BL,BL,-,BL,BL,BL,BL",
+
+        "-,GR,GR,GR,GR,GR,GR,GR,GR,GR,GR,-;"
+        "GR,-,GR,Y,Y,BL,Y,Y,GR,-,GR;"
+        "-,-,Y,Y,Y,GRY,GRY,Y,Y,Y,-,-;"
+        "-,-,-,Y,Y,BL,Y,Y,-,-,-;"
+        "-,GR,-,-,GR,Y,Y,GR,-,-,GR,-;"
+        "-,GR,GR,GR,GR,GR,GR,GR,GR,GR,-;"
+        "BL,BL,-,BL,BL,-,BL,BL,-,BL,BL,-;"
+        "-,GRY,GRY,-,GRY,GRY,-,GRY,GRY,-,GRY;"
+        "BL,BL,-,BL,BL,-,BL,BL,-,BL,BL,-"
+    ]
 }

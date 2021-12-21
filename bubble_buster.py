@@ -32,7 +32,7 @@ class BubbleBuster:
                         self.states_registry['menu']\
                             .layout\
                             .listen_for_mouse_movement(mouse_position)
-                if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
                     mouse_position = pygame.mouse.get_pos()
                     if self.active_state == 'menu':
                         self.states_registry[self.active_state].layout\

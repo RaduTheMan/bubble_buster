@@ -1,4 +1,5 @@
 from circle import Circle
+from level import Level
 from border import Border
 from states.state import State
 from pygame.surface import Surface, SurfaceType
@@ -18,17 +19,25 @@ class GameInProgress(State):
         self.border_horizontal_config = game_in_progress_config[
             'border-horizontal']
         self.velocity = game_in_progress_config['velocity']
+        self.levels_config = game_in_progress_config['levels']
         self.circle_config = game_in_progress_config['circle']
         self.shooting_circle = Circle(self.circle_config['radius'],
                                       (self.window.get_width() / 2,
                                        self.window.get_height() -
-                                       2 * self.circle_config['radius']))
+                                       2 * self.circle_config['radius']),
+                                      colors.RED)
         self.is_shooting = False
         self.equation_line = dict()
         self.x_ratio = 0.0
         self.y_ratio = 0.0
-        self.cntr = 0
         self.__initialize_borders()
+        self.__initialize_levels()
+        self.current_level = self.levels[1]
+
+    def __initialize_levels(self):
+        self.levels = []
+        for level_config in self.levels_config:
+            self.levels.append(Level(level_config, self.window, self.circle_config['radius']))
 
     def __initialize_borders(self):
         self.borders.append(Border((0, 0),
@@ -46,13 +55,15 @@ class GameInProgress(State):
         for border in self.borders:
             border.draw(self.window)
 
+    def draw_current_level(self):
+        self.current_level.draw(self.window)
+
     def draw_state(self):
         self.initial_drawing()
         self.draw_borders()
+        self.draw_current_level()
         self.is_collision_with_borders()
-        pygame.draw.circle(self.window, colors.RED,
-                           self.shooting_circle.position,
-                           self.circle_config['radius'])
+        self.shooting_circle.draw(self.window)
         self.shoot_circle()
 
     def is_collision_with_borders(self):
