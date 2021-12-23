@@ -1,4 +1,5 @@
 from circle import Circle
+from empty_element import EmptyElement
 from level import Level
 from border import Border
 from states.state import State
@@ -20,6 +21,7 @@ class GameInProgress(State):
         self.border_horizontal_config = game_in_progress_config[
             'border-horizontal']
 
+        self.min_group_length = game_in_progress_config['min-group-length']
         self.velocity = game_in_progress_config['velocity']
         self.levels_config = game_in_progress_config['levels']
         self.circle_config = game_in_progress_config['circle']
@@ -49,7 +51,8 @@ class GameInProgress(State):
             self.levels.append(Level(level_config,
                                      self.window,
                                      self.circle_config['radius'],
-                                     self.status_area.height))
+                                     self.status_area.height,
+                                     self.min_group_length))
         self.levels_iter = iter(self.levels)
         self.current_level = next(self.levels_iter)
         self.status_area.level_text.set_level(self.levels.index(self.current_level) + 1)
@@ -76,6 +79,14 @@ class GameInProgress(State):
     def draw_line(self, first_point, second_point, color):
         pygame.draw.line(self.window, color, first_point, second_point)
 
+    def next_throw(self):
+        self.is_shooting = False
+        self.__reset_ratios()
+        self.colors['current-color'] = self.colors['next-color']
+        self.colors['next-color'] = self.current_level.provide_next_color()
+        self.set_colors()
+        self.shooting_circle.position = self.shooting_position
+
     def draw_state(self):
 
         self.initial_drawing()
@@ -84,9 +95,7 @@ class GameInProgress(State):
         self.status_area.draw(self.window)
         self.is_collision_with_borders()
         if self.current_level.detect_collision(self.shooting_circle):
-            self.is_shooting = False
-            self.__reset_ratios()
-            self.shooting_circle.position = self.shooting_position
+            self.next_throw()
         self.draw_line(self.line_config['first-position'],
                        self.line_config['second-position'],
                        self.line_config['color'])
@@ -102,7 +111,13 @@ class GameInProgress(State):
                     self.equation_line['slope'] *= (-1)
                     self.__determine_ratios()
                 else:
-                    self.__reset_ratios()
+                    empty_elements = self.current_level.get_base_elements(EmptyElement)
+                    empty_elements.sort(key=lambda empty_element: geometry.get_distance(empty_element.position, self.shooting_circle.position))
+                    position = empty_elements[0].position
+                    self.current_level.board[position] = Circle(self.shooting_circle.radius, position, self.shooting_circle.color)
+                    self.current_level.update_available_colors(self.current_level.board[position], "add")
+                    self.current_level.pop_circles(self.current_level.board[position])
+                    self.next_throw()
                 break
 
     def shoot_circle(self):

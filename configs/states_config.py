@@ -53,6 +53,7 @@ game_in_progress_config = {
     'circle': {
         'radius': 20.0
     },
+    'min-group-length': 3,
     'velocity': 20,
     'border-vertical': {
         'width': 20,

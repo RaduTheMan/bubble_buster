@@ -24,3 +24,10 @@ table = {
     'Y': YELLOW,
     'W': WHITE
 }
+
+
+def get_color_code(color):
+    color_codes = list(table.keys())
+    colors = list(table.values())
+    color_index = colors.index(color)
+    return color_codes[color_index]
