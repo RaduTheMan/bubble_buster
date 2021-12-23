@@ -77,11 +77,16 @@ class GameInProgress(State):
         pygame.draw.line(self.window, color, first_point, second_point)
 
     def draw_state(self):
+
         self.initial_drawing()
         self.draw_borders()
         self.draw_current_level()
         self.status_area.draw(self.window)
         self.is_collision_with_borders()
+        if self.current_level.detect_collision(self.shooting_circle):
+            self.is_shooting = False
+            self.__reset_ratios()
+            self.shooting_circle.position = self.shooting_position
         self.draw_line(self.line_config['first-position'],
                        self.line_config['second-position'],
                        self.line_config['color'])
@@ -97,8 +102,7 @@ class GameInProgress(State):
                     self.equation_line['slope'] *= (-1)
                     self.__determine_ratios()
                 else:
-                    self.x_ratio = 0.0
-                    self.y_ratio = 0.0
+                    self.__reset_ratios()
                 break
 
     def shoot_circle(self):
@@ -111,6 +115,10 @@ class GameInProgress(State):
                                                self.equation_line['slope'])
         self.x_ratio = point[0] - self.shooting_circle.position[0]
         self.y_ratio = point[1] - self.shooting_circle.position[1]
+
+    def __reset_ratios(self):
+        self.x_ratio = 0.0
+        self.y_ratio = 0.0
 
     def is_valid(self, mouse_position):
         return mouse_position[1] < self.shooting_circle.position[1] - \

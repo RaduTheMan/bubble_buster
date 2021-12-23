@@ -1,5 +1,4 @@
 from text import Text
-from circle import Circle
 
 
 class NextCircleText(Text):
