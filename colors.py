@@ -9,6 +9,7 @@ PURPLE = (230, 230, 250)
 RED = (255, 0, 0)
 YELLOW = (250, 255, 0)
 WHITE = (255, 255, 255)
+DEFAULT = WHITE
 
 table = {
     'BLK': BLACK,
