@@ -7,13 +7,15 @@ class ScoreText(Text):
         super().__init__(text_config)
         self.content = self.text_config['text']
         self.__adjust_position(height, padding)
-        self.set_score(0)
+        self.value = 0
+        self.add_score(self.value)
 
     def __adjust_position(self, height, padding):
         self.position = (padding, height / 2 - self.text.get_height() / 2)
 
-    def set_score(self, score):
-        self.text = self.font.render(self.content + str(score), True,
+    def add_score(self, score):
+        self.value += score
+        self.text = self.font.render(self.content + str(self.value), True,
                                      self.text_config['color'])
 
     def draw(self, window):

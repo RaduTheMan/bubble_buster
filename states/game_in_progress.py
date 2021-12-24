@@ -51,7 +51,7 @@ class GameInProgress(State):
             self.levels.append(Level(level_config,
                                      self.window,
                                      self.circle_config['radius'],
-                                     self.status_area.height,
+                                     self.status_area,
                                      self.min_group_length))
         self.levels_iter = iter(self.levels)
         self.current_level = next(self.levels_iter)
@@ -95,7 +95,15 @@ class GameInProgress(State):
         self.status_area.draw(self.window)
         self.is_collision_with_borders()
         if self.current_level.detect_collision(self.shooting_circle):
-            self.next_throw()
+            if self.current_level.is_board_clear():
+                self.current_level = next(self.levels_iter)
+                self.status_area.level_text.set_level(
+                    self.levels.index(self.current_level) + 1)
+                self.colors = self.current_level.provide_colors()
+                self.set_colors()
+                self.next_throw()
+            else:
+                self.next_throw()
         self.draw_line(self.line_config['first-position'],
                        self.line_config['second-position'],
                        self.line_config['color'])
@@ -117,7 +125,15 @@ class GameInProgress(State):
                     self.current_level.board[position] = Circle(self.shooting_circle.radius, position, self.shooting_circle.color)
                     self.current_level.update_available_colors(self.current_level.board[position], "add")
                     self.current_level.pop_circles(self.current_level.board[position])
-                    self.next_throw()
+                    if self.current_level.is_board_clear():
+                        self.current_level = next(self.levels_iter)
+                        self.status_area.level_text.set_level(
+                            self.levels.index(self.current_level) + 1)
+                        self.colors = self.current_level.provide_colors()
+                        self.set_colors()
+                        self.next_throw()
+                    else:
+                        self.next_throw()
                 break
 
     def shoot_circle(self):

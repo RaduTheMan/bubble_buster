@@ -4,6 +4,24 @@ from next_circle_text import NextCircleText
 import colors
 from circle import Circle
 
+score_calculator = {
+    'min-coefficient': 10,
+    'current-coefficient': 10,
+    'has-popped-before': False,
+    'increment': 5
+}
+
+
+def calculate_score(nr_circles_popped):
+    if score_calculator['has-popped-before']:
+        score_calculator['current-coefficient'] += score_calculator['increment']
+    if nr_circles_popped == 0:
+        score_calculator['has-popped-before'] = False
+        score_calculator['current-coefficient'] = score_calculator['min-coefficient']
+        return 0
+    score_calculator['has-popped-before'] = True
+    return nr_circles_popped * score_calculator['current-coefficient']
+
 
 class StatusArea:
 

@@ -9,11 +9,12 @@ from empty_element import EmptyElement
 from colors import table
 from lee import Lee
 from neighbour_conditions import is_neighbour_same_color, is_neighbour_circle
+from status_area import calculate_score
 
 
 class Level:
 
-    def __init__(self, level_config: str, window: Union[Surface, SurfaceType], radius, score_area_height, min_group_length):
+    def __init__(self, level_config: str, window: Union[Surface, SurfaceType], radius, status_area, min_group_length):
         level_lines = level_config.split(';')
         self.level_lines = [level_line.split(',') for level_line in level_lines]
         self.max_nr_circles_line = len(self.level_lines[0])
@@ -21,14 +22,14 @@ class Level:
         self.available_colors = dict()
         self.min_group_length = min_group_length
         self.radius = radius
-        self.score_area_height = score_area_height
+        self.status_area = status_area
         self.directions = [(-self.radius, -(2 * self.radius - 5)), (self.radius, -(2 * self.radius - 5)), (2 * self.radius, 0), (self.radius, 2 * self.radius - 5),
                            (-self.radius, 2 * self.radius - 5), (-2 * self.radius, 0)]
         self.__build_board()
 
     def __build_board(self):
         self.board = dict()
-        current_height = self.score_area_height + 2 * self.radius
+        current_height = self.status_area.height + 2 * self.radius
         last_length = 0
         for level_line in self.level_lines:
             current_position = (2 * self.radius, current_height) if len(level_line) == self.max_nr_circles_line else (3 * self.radius, current_height)
@@ -45,7 +46,7 @@ class Level:
                 current_position = current_position[0] + 2 * self.radius, current_height
             current_height += 2 * self.radius - 5
 
-        while current_height <= self.available_width:
+        while current_height <= self.available_width + 2 * self.radius - 5:
             last_length = 2 * self.max_nr_circles_line - 1 - last_length
             current_position = (2 * self.radius, current_height) if last_length == self.max_nr_circles_line else (3 * self.radius, current_height)
             for i in range(0, last_length):
@@ -53,8 +54,11 @@ class Level:
                 current_position = current_position[0] + 2 * self.radius, current_height
             current_height += 2 * self.radius - 5
 
+    def is_board_clear(self):
+        return len(self.available_colors) == 0
+
     def get_base_elements(self, type_element):
-        current_height = self.score_area_height + 2 * self.radius
+        current_height = self.status_area.height + 2 * self.radius
         current_position = (2 * self.radius, current_height)
         base_circles = []
         for i in range(0, self.max_nr_circles_line):
@@ -75,7 +79,6 @@ class Level:
                 self.available_colors[color_code] = 1
         if self.available_colors[color_code] == 0:
             self.available_colors.pop(color_code)
-        print(self.available_colors)
 
     def provide_colors(self):
         colors = list(self.available_colors.keys())
@@ -117,18 +120,23 @@ class Level:
                         self.directions, is_neighbour_same_color)
         algorithm.run()
         to_pop_circles = algorithm.visited
+        nr_circles_popped = 0
         if len(to_pop_circles) >= self.min_group_length:
+            nr_circles_popped += len(to_pop_circles)
             for circle_position in to_pop_circles.keys():
                 self.update_available_colors(self.board[circle_position], "remove")
                 self.board[circle_position] = EmptyElement(circle_position)
-        base_circles = self.get_base_elements(Circle)
-        algorithm = Lee(self.board, base_circles,
+            base_circles = self.get_base_elements(Circle)
+            algorithm = Lee(self.board, base_circles,
                         self.directions, is_neighbour_circle)
-        algorithm.run()
-        for key, value in self.board.items():
-            if isinstance(value, Circle) and key not in algorithm.visited.keys():
-                self.update_available_colors(value, "remove")
-                self.board[value.position] = EmptyElement(value.position)
+            algorithm.run()
+            for key, value in self.board.items():
+                if isinstance(value, Circle) and key not in algorithm.visited.keys():
+                    self.update_available_colors(value, "remove")
+                    nr_circles_popped += 1
+                    self.board[value.position] = EmptyElement(value.position)
+        current_throw_score = calculate_score(nr_circles_popped)
+        self.status_area.score_text.add_score(current_throw_score)
 
     def update_board(self, collision_position, shooting_circle):
         starting_circle_position = self.__get_position_shot_circle(
