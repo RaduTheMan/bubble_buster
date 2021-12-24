@@ -1,3 +1,4 @@
+import pygame
 from pygame.surface import Surface, SurfaceType
 import random
 from typing import Union
@@ -10,6 +11,7 @@ from colors import table
 from lee import Lee
 from neighbour_conditions import is_neighbour_same_color, is_neighbour_circle
 from status_area import calculate_score
+from configs.states_config import NEXT_STATE
 
 
 class Level:
@@ -67,6 +69,18 @@ class Level:
                 base_circles.append(element)
             current_position = current_position[0] + 2 * self.radius, current_height
         return base_circles
+
+    def get_front_elements(self, type_element):
+        positions = list(self.board.keys())
+        positions.sort(key=lambda position: position[1], reverse=True)
+        max_height = positions[0][1]
+        front_positions = [position for position in positions if position[1] == max_height]
+        front_elements = []
+        for front_position in front_positions:
+            element = self.board[front_position]
+            if isinstance(element, type_element):
+                front_elements.append(element)
+        return front_elements
 
     def update_available_colors(self, circle, method):
         color_code = colors.get_color_code(circle.color)
@@ -151,6 +165,8 @@ class Level:
             if isinstance(self.board[position], Circle):
                 if geometry.get_distance(position, shooting_circle.position) <= self.board[position].radius + shooting_circle.radius:
                     self.update_board(position, shooting_circle)
+                    if len(self.get_front_elements(Circle)) > 0:
+                        pygame.event.post(pygame.event.Event(NEXT_STATE))
                     return True
         return False
 
