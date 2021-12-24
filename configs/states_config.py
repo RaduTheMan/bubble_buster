@@ -54,6 +54,7 @@ game_in_progress_config = {
         'radius': 20.0
     },
     'min-group-length': 3,
+    'nr-throws-trigger': 5,
     'velocity': 20,
     'border-vertical': {
         'width': 20,

@@ -11,7 +11,6 @@ from colors import table
 from lee import Lee
 from neighbour_conditions import is_neighbour_same_color, is_neighbour_circle
 from status_area import calculate_score
-from configs.states_config import NEXT_STATE
 
 
 class Level:
@@ -27,10 +26,10 @@ class Level:
         self.status_area = status_area
         self.directions = [(-self.radius, -(2 * self.radius - 5)), (self.radius, -(2 * self.radius - 5)), (2 * self.radius, 0), (self.radius, 2 * self.radius - 5),
                            (-self.radius, 2 * self.radius - 5), (-2 * self.radius, 0)]
+        self.board = dict()
         self.__build_board()
 
     def __build_board(self):
-        self.board = dict()
         current_height = self.status_area.height + 2 * self.radius
         last_length = 0
         for level_line in self.level_lines:
@@ -56,19 +55,30 @@ class Level:
                 current_position = current_position[0] + 2 * self.radius, current_height
             current_height += 2 * self.radius - 5
 
+    def shift_board(self):
+        new_board = dict()
+        for key, value in self.board.items():
+            key = key[0], key[1] + self.radius
+            if isinstance(value, Circle):
+                new_board[key] = Circle(value.radius, key, value.color)
+            else:
+                new_board[key] = EmptyElement(key)
+        self.board = new_board
+
     def is_board_clear(self):
         return len(self.available_colors) == 0
 
     def get_base_elements(self, type_element):
-        current_height = self.status_area.height + 2 * self.radius
-        current_position = (2 * self.radius, current_height)
-        base_circles = []
-        for i in range(0, self.max_nr_circles_line):
-            element = self.board[current_position]
+        positions = list(self.board.keys())
+        positions.sort(key=lambda position: position[1])
+        min_height = positions[0][1]
+        base_positions = [position for position in positions if position[1] == min_height]
+        base_elements = []
+        for base_position in base_positions:
+            element = self.board[base_position]
             if isinstance(element, type_element):
-                base_circles.append(element)
-            current_position = current_position[0] + 2 * self.radius, current_height
-        return base_circles
+                base_elements.append(element)
+        return base_elements
 
     def get_front_elements(self, type_element):
         positions = list(self.board.keys())
@@ -165,8 +175,6 @@ class Level:
             if isinstance(self.board[position], Circle):
                 if geometry.get_distance(position, shooting_circle.position) <= self.board[position].radius + shooting_circle.radius:
                     self.update_board(position, shooting_circle)
-                    if len(self.get_front_elements(Circle)) > 0:
-                        pygame.event.post(pygame.event.Event(NEXT_STATE))
                     return True
         return False
 
