@@ -8,3 +8,6 @@ class Text:
                                         text_config['font-size'])
         self.text = self.font.render(text_config['text'],
                                      True, text_config['color'])
+
+    def set_content(self, content):
+        self.text = self.font.render(content, True, self.text_config['color'])

@@ -16,7 +16,8 @@ class GameInProgress(State):
     def __init__(self, window: Union[Surface, SurfaceType],
                  game_in_progress_config):
         super().__init__(window)
-
+        self.has_data_to_send = True
+        self.verdict = "PROGRESS"
         self.borders = []
         self.additional_borders = []
         self.border_vertical_config = game_in_progress_config['border-vertical']
@@ -80,6 +81,12 @@ class GameInProgress(State):
                                    self.border_horizontal_config, 'horizontal',
                                    colors.GRAY))
 
+    def send_data(self):
+        return {
+            'verdict': self.verdict,
+            'score': self.status_area.score_text.value
+        }
+
     def spawn_additional_border(self):
         nr_additional_borders = len(self.additional_borders)
         position = (0, self.status_area.height + (nr_additional_borders + 1) *
@@ -117,6 +124,13 @@ class GameInProgress(State):
                 return True
         return False
 
+    def get_next_level(self):
+        try:
+            next_level = next(self.levels_iter)
+        except StopIteration:
+            next_level = None
+        return next_level
+
     def draw_state(self):
 
         self.initial_drawing()
@@ -124,25 +138,32 @@ class GameInProgress(State):
         self.draw_current_level()
         self.status_area.draw(self.window)
         self.is_collision_with_borders()
-        if self.current_level.detect_collision(self.shooting_circle):
-            if self.current_level.is_board_clear():
-                self.current_level = next(self.levels_iter)
-                self.additional_borders = []
-                self.status_area.level_text.set_level(
-                    self.levels.index(self.current_level) + 1)
-                self.colors = self.current_level.provide_colors()
-                self.set_colors()
-                self.next_throw()
-                self.nr_throws = 0
-            else:
-                self.next_throw()
-                self.nr_throws += 1
         if self.nr_throws == self.nr_throws_trigger:
             self.nr_throws = 0
             self.current_level.shift_board()
             self.spawn_additional_border()
+
         if self.circle_reaches_end_line():
+            self.verdict = "LOST"
             pygame.event.post(pygame.event.Event(NEXT_STATE))
+
+        if self.current_level.detect_collision(self.shooting_circle):
+            if self.current_level.is_board_clear():
+                self.current_level = self.get_next_level()
+                if self.current_level is None:
+                    self.verdict = "WON"
+                    pygame.event.post(pygame.event.Event(NEXT_STATE))
+                else:
+                    self.additional_borders = []
+                    self.status_area.level_text.set_level(
+                        self.levels.index(self.current_level) + 1)
+                    self.colors = self.current_level.provide_colors()
+                    self.set_colors()
+                    self.next_throw()
+                    self.nr_throws = 0
+            else:
+                self.next_throw()
+                self.nr_throws += 1
 
         self.draw_line(self.line_config['first-position'],
                        self.line_config['second-position'],
@@ -176,14 +197,18 @@ class GameInProgress(State):
                     self.current_level.pop_circles(
                         self.current_level.board[position])
                     if self.current_level.is_board_clear():
-                        self.current_level = next(self.levels_iter)
-                        self.additional_borders = []
-                        self.status_area.level_text.set_level(
-                            self.levels.index(self.current_level) + 1)
-                        self.colors = self.current_level.provide_colors()
-                        self.set_colors()
-                        self.next_throw()
-                        self.nr_throws = 0
+                        self.current_level = self.get_next_level()
+                        if self.current_level is None:
+                            self.verdict = "WON"
+                            pygame.event.post(pygame.event.Event(NEXT_STATE))
+                        else:
+                            self.additional_borders = []
+                            self.status_area.level_text.set_level(
+                                self.levels.index(self.current_level) + 1)
+                            self.colors = self.current_level.provide_colors()
+                            self.set_colors()
+                            self.next_throw()
+                            self.nr_throws = 0
                     else:
                         self.next_throw()
                         self.nr_throws += 1

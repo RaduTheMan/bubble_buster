@@ -41,6 +41,9 @@ class BubbleBuster:
                         self.states_registry[self.active_state]\
                             .listen_for_click(mouse_position)
                 if event.type == NEXT_STATE:
-                    self.active_state = next(self.possible_states_iter)
+                    next_state = next(self.possible_states_iter)
+                    if self.states_registry[self.active_state].has_data_to_send:
+                        self.states_registry[next_state].received_data = self.states_registry[self.active_state].send_data()
+                    self.active_state = next_state
             self.states_registry[self.active_state].draw_state()
             pygame.display.update()

@@ -9,6 +9,8 @@ class State:
 
     def __init__(self, window: Union[Surface, SurfaceType]):
         self.window = window
+        self.has_data_to_send = False
+        self.received_data = None
 
     def initial_drawing(self):
         self.window.blit(self.background, (0, 0))

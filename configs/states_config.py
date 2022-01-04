@@ -125,3 +125,18 @@ game_in_progress_config['line-config'] = {
                         2 * game_in_progress_config['circle']['radius']),
     'color': colors.BLACK
 }
+
+game_over_config = {
+    'verdict': {
+        'text': "GAME OVER",
+        'font-size': 60,
+        'font-type': 'comic-sans',
+        'color': colors.WHITE
+    },
+    'score': {
+        'text': "Score: ",
+        'font-size': 30,
+        'font-type': 'comic-sans',
+        'color': colors.WHITE
+    }
+}

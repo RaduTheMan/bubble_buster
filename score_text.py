@@ -18,5 +18,10 @@ class ScoreText(Text):
         self.text = self.font.render(self.content + str(self.value), True,
                                      self.text_config['color'])
 
+    def set_score(self, score):
+        self.value = score
+        self.text = self.font.render(self.content + str(self.value), True,
+                                     self.text_config['color'])
+
     def draw(self, window):
         window.blit(self.text, self.position)
