@@ -1,7 +1,8 @@
-import os
 import pygame
-import colors
+import os
 from configs.config_loader import ConfigLoader
+from shared import colors
+
 
 NEXT_STATE = pygame.USEREVENT + 1
 window_config = ConfigLoader.load_config(

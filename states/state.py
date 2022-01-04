@@ -1,7 +1,8 @@
-from configs.states_config import state_config
-from pygame.surface import Surface, SurfaceType
 from pygame import image
+from pygame.surface import Surface, SurfaceType
 from typing import Union
+
+from configs.states_config import state_config
 
 
 class State:

@@ -1,7 +1,9 @@
 import pygame
+
 from configs.config_loader import ConfigLoader
-from states.states_provider import get_states_registry
 from configs.states_config import NEXT_STATE
+
+from states.states_provider import get_states_registry
 
 
 class BubbleBuster:
@@ -43,7 +45,8 @@ class BubbleBuster:
                 if event.type == NEXT_STATE:
                     next_state = next(self.possible_states_iter)
                     if self.states_registry[self.active_state].has_data_to_send:
-                        self.states_registry[next_state].received_data = self.states_registry[self.active_state].send_data()
+                        self.states_registry[next_state].received_data = \
+                            self.states_registry[self.active_state].send_data()
                     self.active_state = next_state
             self.states_registry[self.active_state].draw_state()
             pygame.display.update()
