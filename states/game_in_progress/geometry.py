@@ -2,6 +2,12 @@ import math
 
 
 def get_equation_line(first_point, second_point):
+    """
+    Determines the equation of the line.
+    :param first_point: first point of the line
+    :param second_point: second point of the line
+    :return:
+    """
     if first_point[0] == second_point[0]:
         return {
             'slope': "UNDEFINED",
@@ -17,11 +23,25 @@ def get_equation_line(first_point, second_point):
 
 
 def get_distance(first_point, second_point):
+    """
+    Determines the distance between two points.
+    :param first_point:
+    :param second_point:
+    :return:
+    """
     return math.sqrt((second_point[0] - first_point[0]) ** 2
                      + (second_point[1] - first_point[1]) ** 2)
 
 
 def get_point_at_distance(point, slope, distance=0.25):
+    """
+    Determines the next (upward) point from the slope that is at a certain
+    distance from the point given as parameter.
+    :param point:
+    :param slope:
+    :param distance:
+    :return:
+    """
     if slope != "UNDEFINED":
         magnitude = math.sqrt(1 + slope ** 2)
         n = 1 / magnitude, slope / magnitude

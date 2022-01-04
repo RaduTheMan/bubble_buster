@@ -1,3 +1,7 @@
+"""
+    This module provides some predefined colors.
+"""
+
 BLACK = (0, 0, 0)
 BLUE = (0, 0, 255)
 BROWN = (165, 42, 42)
@@ -27,6 +31,11 @@ table = {
 
 
 def get_color_code(color):
+    """
+
+    :param color: an rgb color (tuple[int, int, int])
+    :return: (string): the corresponding code of the color from the table
+    """
     color_codes = list(table.keys())
     colors = list(table.values())
     color_index = colors.index(color)
